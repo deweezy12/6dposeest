@@ -4,9 +4,10 @@ import math
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from utils import *
+from utils2 import *
 
 def build_targets(pred_corners, target, num_keypoints, num_anchors, num_classes, nH, nW, noobject_scale, object_scale, sil_thresh, seen):
+    #num_keypoints = 4
     nB = target.size(0)
     nA = num_anchors
     nC = num_classes
@@ -43,18 +44,26 @@ def build_targets(pred_corners, target, num_keypoints, num_anchors, num_classes,
                 g.append(target[b][t*num_labels+2*i+2])
 
             cur_gt_corners = torch.FloatTensor(g).repeat(nAnchors,1).t() # 16 x nAnchors
-            #print(f"cur_pred_corners{cur_pred_corners.size()}")
-            #print(f"cur_gt_corners{cur_gt_corners.size()}")
-            #print(len(conf_mask[b]))
+            #print(f"Iteration: {t}")
+            #print(f"before cur_pred_corners={cur_pred_corners.size()}")
+            #print(f"before cur_gt_corners={cur_gt_corners.size()}")
+            #print(f"before conf_mask={conf_mask.size()}")
+            #conf_mask = conf_mask.view(8, -1)
+            #print(f"conf_mask={conf_mask.size()}")
             #print(f"cur_confs are {cur_confs.size()}")
 
             #cur_confs  = torch.max(cur_confs, corner_confidence(cur_pred_corners, cur_gt_corners))
-            print(t)
-            print(sil_thresh)
+            #print(t)
+            #print(sil_thresh)
             #print(f"2cur_confs are size {cur_confs.size()}")
             #print(f"2cur_confs are slen {len(cur_confs)}")
             cur_confs  = torch.max(cur_confs, corner_confidences(cur_pred_corners, cur_gt_corners)).view_as(conf_mask[b]) # some irrelevant areas are filtered, in the same grid multiple anchor boxes might exceed the threshold
+            #print(f"after cur_pred_corners={cur_pred_corners.size()}")
+            #print(f"after cur_gt_corners={cur_gt_corners.size()}")
+            #print(f"after conf_mask={conf_mask.size()}")
             #print(f"conf_mask[b] hat len {len(conf_mask[b])} und ist {conf_mask[b]}")
+            #conf_mask = conf_mask.view(8, 1, 13, 13).view(8, 169)
+        #print(cur_confs[0][0])
         conf_mask[b][cur_confs>sil_thresh] = 0
 
 
@@ -119,16 +128,17 @@ class RegionLoss(nn.Module):
         nC = self.num_classes
         nH = output.data.size(2)
         nW = output.data.size(3)
-        #num_keypoints = 4
-        num_keypoints = self.num_keypoints
+        num_keypoints = 4
+        #num_keypoints = self.num_keypoints
 
         print(f"nB = {nB}, nA = {nA}, nC = {nC}, nH = {nH}, nW = {nW}, num_keypoints = {num_keypoints}")
 
 
 
         # Activation
+        print(f"output size before {output.size()}")
         output = output.view(nB, nA, (num_keypoints*2+1+nC), nH, nW)
-        #print(f"The output is: {output}")
+        print(f"output size after{output.size()}")
         x = list()
         y = list()
         x.append(torch.sigmoid(output.index_select(2, Variable(torch.cuda.LongTensor([0]))).view(nB, nA, nH, nW)))

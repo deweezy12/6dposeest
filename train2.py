@@ -16,7 +16,7 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable # Useful info about autograd: http://pytorch.org/docs/master/notes/autograd.html
 
 import dataset
-from utils import *    
+from utils2 import *    
 from cfg import parse_cfg
 from region_loss2 import RegionLoss
 from darknet import Darknet
@@ -170,7 +170,7 @@ def test(epoch, niter):
         output = model(data).data  
         t3 = time.time()
         # Using confidence threshold, eliminate low-confidence predictions
-        all_boxes = get_region_boxes(output, num_classes, num_keypoints=4)        
+        all_boxes = get_region_boxes(output, num_classes, num_keypoints)        
         t4 = time.time()
         # Iterate through all batch elements
         for box_pr, target in zip([all_boxes], [target[0]]):
@@ -194,8 +194,8 @@ def test(epoch, niter):
                 corners2D_pr[:, 0] = corners2D_pr[:, 0] * im_width
                 corners2D_pr[:, 1] = corners2D_pr[:, 1] * im_height
 
-                print(corners2d_pr)
-                print(num_keypoints)
+                #print(corners2d_pr)
+                #print(num_keypoints)
 
                 # Compute corner prediction error
                 corner_norm = np.linalg.norm(corners2D_gt - corners2D_pr, axis=1)

@@ -9,7 +9,7 @@ from torchvision import datasets, transforms
 
 import dataset
 from darknet import Darknet
-from utils import *
+from utils2 import *
 from MeshPly import MeshPly
 
 def extract_tecture(filepath, iterator, corners):
