@@ -1,0 +1,15 @@
+train  = LINEMOD/legomix2_2/train.txt
+valid  = LINEMOD/legomix2_2/test.txt
+backup = backup/legomix2_2
+mesh = LINEMOD/legomix2_2/legomix2_2.ply
+tr_range = LINEMOD/legomix2_2/training_range.txt
+name = legomix2_2
+diam = 0.13913
+gpus = 0
+width = 640
+height = 480
+fx = 572.4114 
+fy = 573.5704
+u0 = 325.2611
+v0 = 242.04
+
