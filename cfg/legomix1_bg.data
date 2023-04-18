@@ -1,0 +1,15 @@
+train  = LINEMOD/legomix1_bg/train.txt
+valid  = LINEMOD/legomix1_bg/test.txt
+backup = backup/legomix1_bg
+mesh = LINEMOD/legomix1_bg/legomix1_bg.ply
+tr_range = LINEMOD/legomix1_bg/training_range.txt
+name = legomix1_bg
+diam = 0.206184
+gpus = 0
+width = 640
+height = 480
+fx = 572.4114 
+fy = 573.5704
+u0 = 325.2611
+v0 = 242.04
+
